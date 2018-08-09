@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+
+        android:id="@+id/poster_view"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_margin="2dp"
+        android:contentDescription="@string/poster_image_content"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></ImageView>
+
+</android.support.constraint.ConstraintLayout>
