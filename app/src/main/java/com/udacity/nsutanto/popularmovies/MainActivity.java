@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements ITaskListener {
     private Toolbar mToolbar;
     private SortBy mSortBy;
     private enum SortBy {
-        POPULAR, TOP_RATED
+        POPULAR, TOP_RATED, FAVORITE
     }
 
     @Override
@@ -65,10 +65,15 @@ public class MainActivity extends AppCompatActivity implements ITaskListener {
             mToolbar.setTitle(R.string.action_popular);
             loadMovieData();
         }
-        else {
+        else if (id == R.id.action_top_rated) {
             mSortBy = SortBy.TOP_RATED;
             mToolbar.setTitle(R.string.action_top_rated);
             loadMovieData();
+        } else {
+            // Favorite
+            mSortBy = SortBy.FAVORITE;
+            mToolbar.setTitle(R.string.action_favorite);
+            // TODO: Load from data persistence
         }
 
         return super.onOptionsItemSelected(item);
