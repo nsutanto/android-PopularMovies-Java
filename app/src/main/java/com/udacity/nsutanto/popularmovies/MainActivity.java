@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements ITaskListener {
     private MovieAdapter mMovieAdapter;
     private ProgressBar mLoadingIndicator;
     private TextView mErrorMessage;
+    private Toolbar mToolbar;
     private SortBy mSortBy;
     private enum SortBy {
         POPULAR, TOP_RATED
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements ITaskListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_movie, menu);
+        mToolbar.setTitle(R.string.action_popular);
         return true;
     }
 
@@ -60,10 +62,12 @@ public class MainActivity extends AppCompatActivity implements ITaskListener {
 
         if (id == R.id.action_popular) {
             mSortBy = SortBy.POPULAR;
+            mToolbar.setTitle(R.string.action_popular);
             loadMovieData();
         }
         else {
             mSortBy = SortBy.TOP_RATED;
+            mToolbar.setTitle(R.string.action_top_rated);
             loadMovieData();
         }
 
@@ -113,13 +117,12 @@ public class MainActivity extends AppCompatActivity implements ITaskListener {
 
     private void initUI() {
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
         mSortBy = SortBy.POPULAR;
         mLoadingIndicator = findViewById(R.id.progressBar);
         mErrorMessage = findViewById(R.id.errorTextView);
-
     }
 
     private void initRecyclerView() {
