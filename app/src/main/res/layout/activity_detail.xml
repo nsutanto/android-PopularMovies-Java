@@ -4,89 +4,91 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/background_dark"
     tools:context=".DetailActivity">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp">
-
-        <ImageView
-            android:id="@+id/poster"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/poster_image_content"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher"
-            app:layout_constraintBottom_toTopOf="@+id/tv_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/poster" />
-
-
-        <TextView
-            android:id="@+id/tv_date_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:text="@string/release_date"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_title" />
-
-        <TextView
-            android:id="@+id/tv_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/tv_date_text"
-            app:layout_constraintLeft_toRightOf="@+id/tv_date_text" />
-
-        <TextView
-            android:id="@+id/tv_vote_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:text="@string/rating"
+            android:layout_margin="8dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="@android:color/background_light"
+            android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_date_text" />
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_vote"
+
+        <LinearLayout
+            android:id="@+id/imageLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/tv_vote_text"
-            app:layout_constraintLeft_toLeftOf="@+id/tv_date"
-            app:layout_constraintTop_toBottomOf="@+id/tv_date" />
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title">
+
+            <ImageView
+                android:id="@+id/poster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/poster_image_content"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher"
+                app:layout_constraintBottom_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/detailLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp">
+
+                <TextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/background_light"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_date_text"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_date_text" />
+
+                <TextView
+                    android:id="@+id/tv_vote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/background_light"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_vote_text"
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_date"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_date" />
+
+            </LinearLayout>
+        </LinearLayout>
 
 
         <TextView
             android:id="@+id/tv_overview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:textColor="@android:color/background_light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_vote_text" />
+            app:layout_constraintTop_toBottomOf="@+id/imageLayout" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
