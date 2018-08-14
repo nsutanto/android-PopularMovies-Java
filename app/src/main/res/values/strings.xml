@@ -8,4 +8,6 @@
     <string name="poster_image_content">PosterImageContent</string>
     <string name="rating">Rating</string>
     <string name="release_date">Release Date</string>
+    <string name="mark_as_favorite">Mark as favorite</string>
+    <string name="favorite">Favorite</string>
 </resources>
