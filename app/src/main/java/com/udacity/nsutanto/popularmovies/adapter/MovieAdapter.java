@@ -14,10 +14,11 @@ import com.udacity.nsutanto.popularmovies.model.Movie;
 import com.udacity.nsutanto.popularmovies.utils.NetworkUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
-    private ArrayList<Movie> mMovies = new ArrayList<>();
+    private List<Movie> mMovies = new ArrayList<>();
     private static ITaskListener mTaskListener;
     private Context context;
 
@@ -64,7 +65,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return mMovies.size();
     }
 
-    public void setMovies(ArrayList<Movie> movies) {
+    public void setMovies(List<Movie> movies) {
         mMovies = movies;
         notifyDataSetChanged();
     }
