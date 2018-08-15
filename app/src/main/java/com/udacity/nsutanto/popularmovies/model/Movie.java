@@ -1,16 +1,29 @@
 package com.udacity.nsutanto.popularmovies.model;
 
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+@Entity(tableName = "Movie")
 public class Movie implements Parcelable {
-    private final int mId;
-    private final String mTitle;
-    private final String mReleaseDate;
-    private final String mPosterPath;
-    private final String mVoteAverage;
-    private final String mOverview;
+
+    @PrimaryKey
+    private final int id;
+    @ColumnInfo(name = "title")
+    private final String title;
+    @ColumnInfo(name = "release_date")
+    private final String releaseDate;
+    @ColumnInfo(name = "poster_path")
+    private final String posterPath;
+    @ColumnInfo(name = "vote_average")
+    private final String voteAverage;
+    @ColumnInfo(name = "overview")
+    private final String overview;
+    @ColumnInfo(name = "is_favorite")
+    private int favorite;
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
 
@@ -25,24 +38,31 @@ public class Movie implements Parcelable {
         }
     };
 
-    public Movie(int id, String title, String releaseDate, String posterPath, String voteAverage, String overview) {
-        mId = id;
-        mTitle = title;
-        mReleaseDate = releaseDate;
-        mPosterPath = posterPath;
-        mVoteAverage = voteAverage;
-        mOverview = overview;
+    public Movie(int id, String title, String releaseDate, String posterPath, String voteAverage, String overview, int favorite) {
+        this.id = id;
+        this.title = title;
+        this.releaseDate = releaseDate;
+        this.posterPath = posterPath;
+        this.voteAverage = voteAverage;
+        this.overview = overview;
+        this.favorite = favorite;
     }
 
-    public String GetTitle() { return mTitle; }
+    public int getId() { return id; }
 
-    public String GetReleaseDate() { return mReleaseDate; }
+    public String getTitle() { return title; }
 
-    public String GetPosterPath() { return mPosterPath; }
+    public String getReleaseDate() { return releaseDate; }
 
-    public String GetVoteAverage() { return mVoteAverage; }
+    public String getPosterPath() { return posterPath; }
 
-    public String GetOverview() { return mOverview; }
+    public String getVoteAverage() { return voteAverage; }
+
+    public String getOverview() { return overview; }
+
+    public int getFavorite() { return favorite; }
+
+    public void setFavorite(int value) { favorite = value; }
 
     @Override
     public int describeContents() {
@@ -51,20 +71,22 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeInt(mId);
-        out.writeString(mTitle);
-        out.writeString(mReleaseDate);
-        out.writeString(mPosterPath);
-        out.writeString(mVoteAverage);
-        out.writeString(mOverview);
+        out.writeInt(id);
+        out.writeString(title);
+        out.writeString(releaseDate);
+        out.writeString(posterPath);
+        out.writeString(voteAverage);
+        out.writeString(overview);
+        out.writeInt(favorite);
     }
 
     private Movie(Parcel in) {
-        mId = in.readInt();
-        mTitle = in.readString();
-        mReleaseDate = in.readString();
-        mPosterPath = in.readString();
-        mVoteAverage = in.readString();
-        mOverview = in.readString();
+        id = in.readInt();
+        title = in.readString();
+        releaseDate = in.readString();
+        posterPath = in.readString();
+        voteAverage = in.readString();
+        overview = in.readString();
+        favorite = in.readInt();
     }
 }
