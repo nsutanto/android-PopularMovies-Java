@@ -1,13 +1,15 @@
 package com.udacity.nsutanto.popularmovies;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,12 +20,14 @@ import android.widget.TextView;
 
 import com.udacity.nsutanto.popularmovies.adapter.MovieAdapter;
 import com.udacity.nsutanto.popularmovies.listener.ITaskListener;
+import com.udacity.nsutanto.popularmovies.model.AppDatabase;
 import com.udacity.nsutanto.popularmovies.model.Movie;
 import com.udacity.nsutanto.popularmovies.task.FetchMovieTask;
 import com.udacity.nsutanto.popularmovies.utils.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ITaskListener {
 
@@ -33,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements ITaskListener {
     private TextView mErrorMessage;
     private Toolbar mToolbar;
     private SortBy mSortBy;
+    private AppDatabase mAppDatabase;
     private enum SortBy {
         POPULAR, TOP_RATED, FAVORITE
     }
@@ -42,11 +47,24 @@ public class MainActivity extends AppCompatActivity implements ITaskListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mAppDatabase = AppDatabase.getInstance(getApplicationContext());
+
         initUI();
         initRecyclerView();
 
         loadMovieData();
     }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if ((mSortBy == mSortBy.POPULAR) || (mSortBy == mSortBy.TOP_RATED)) {
+            //loadFavorite();
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -73,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements ITaskListener {
             // Favorite
             mSortBy = SortBy.FAVORITE;
             mToolbar.setTitle(R.string.action_favorite);
-            // TODO: Load from data persistence
+
+            loadFavorite();
         }
 
         return super.onOptionsItemSelected(item);
@@ -118,6 +137,17 @@ public class MainActivity extends AppCompatActivity implements ITaskListener {
             mErrorMessage.setText("Fail to fetch movies");
             mLoadingIndicator.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void loadFavorite() {
+
+        final LiveData<List<Movie>> movies = mAppDatabase.movieDao().loadAllMovies();
+        movies.observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+                mMovieAdapter.setMovies(movies);
+            }
+        });
     }
 
     private void initUI() {
