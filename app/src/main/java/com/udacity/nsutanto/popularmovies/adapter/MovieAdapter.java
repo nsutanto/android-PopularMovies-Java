@@ -51,7 +51,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String posterPath = mMovies.get(position).GetPosterPath();
+        String posterPath = mMovies.get(position).getPosterPath();
         if (posterPath != "") {
             Picasso.get()
                     .load(NetworkUtils.BASE_URL_POSTER + posterPath)
@@ -64,9 +64,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return mMovies.size();
     }
 
-   public void setMovies(ArrayList<Movie> movies) {
+    public void setMovies(ArrayList<Movie> movies) {
         mMovies = movies;
         notifyDataSetChanged();
-   }
+    }
 }
 
