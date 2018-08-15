@@ -35,7 +35,7 @@ public class JsonUtils {
             String posterPath = movie.getString(POSTER_PATH);
             String voteAverage = movie.getString(VOTE_AVERAGE);
 
-            Movie movieData = new Movie(id, title, releaseDate, posterPath, voteAverage, overview);
+            Movie movieData = new Movie(id, title, releaseDate, posterPath, voteAverage, overview, 0);
             movies.add(movieData);
         }
 
