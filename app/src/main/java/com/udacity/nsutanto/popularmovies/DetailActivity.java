@@ -7,6 +7,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.udacity.nsutanto.popularmovies.adapter.MovieAdapter;
+import com.udacity.nsutanto.popularmovies.adapter.ReviewAdapter;
 import com.udacity.nsutanto.popularmovies.model.AppDatabase;
 import com.udacity.nsutanto.popularmovies.model.Movie;
 import com.udacity.nsutanto.popularmovies.utils.NetworkUtils;
@@ -29,7 +34,9 @@ public class DetailActivity extends AppCompatActivity {
     private TextView mOverview;
     private Button mFavorite;
     private AppDatabase mAppDatabase;
-
+    private RecyclerView mRVReview;
+    private ReviewAdapter mReviewAdapter;
+    private LinearLayoutManager mReviewLayoutManager;
     private Movie mMovie;
 
     @Override
@@ -105,5 +112,17 @@ public class DetailActivity extends AppCompatActivity {
             mFavorite.setText("Mark as favorite");
             mMovie.setFavorite(0);
         }
+    }
+
+    private void initReviewRecyclerView() {
+        mRVReview = findViewById(R.id.rv_review);
+
+        mReviewLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRVReview.setLayoutManager(mReviewLayoutManager);
+        mReviewLayoutManager.setSmoothScrollbarEnabled(true);
+        mReviewAdapter = new ReviewAdapter();
+        mRVReview.setAdapter(mReviewAdapter);
+        mRVReview.setNestedScrollingEnabled(false);
+
     }
 }
