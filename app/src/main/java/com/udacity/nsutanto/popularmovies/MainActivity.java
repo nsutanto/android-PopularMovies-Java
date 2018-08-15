@@ -29,6 +29,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+
+// TODO: Fix landscape / horizontal layout
+// TODO: Implement the Up back
+// TODO: Implement keep loading the background when rotating the device
+
 public class MainActivity extends AppCompatActivity implements ITaskListener {
 
     private RecyclerView mRecyclerView;
@@ -54,17 +59,6 @@ public class MainActivity extends AppCompatActivity implements ITaskListener {
 
         loadMovieData();
     }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if ((mSortBy == mSortBy.POPULAR) || (mSortBy == mSortBy.TOP_RATED)) {
-            //loadFavorite();
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -145,7 +139,9 @@ public class MainActivity extends AppCompatActivity implements ITaskListener {
         movies.observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
-                mMovieAdapter.setMovies(movies);
+                if (mSortBy == SortBy.FAVORITE) {
+                    mMovieAdapter.setMovies(movies);
+                }
             }
         });
     }
