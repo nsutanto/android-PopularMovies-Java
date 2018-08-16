@@ -6,6 +6,6 @@ import java.util.ArrayList;
 
 
 public interface ITaskReviewListener {
-    void OnPostExecute(ArrayList<Review> reviews);
+    void OnPostExecuteReviewTask(ArrayList<Review> reviews);
     URL GetReviewURL();
 }
