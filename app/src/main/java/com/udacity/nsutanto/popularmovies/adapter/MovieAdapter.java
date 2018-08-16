@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.nsutanto.popularmovies.R;
-import com.udacity.nsutanto.popularmovies.listener.ITaskListener;
+import com.udacity.nsutanto.popularmovies.listener.ITaskMovieListener;
 import com.udacity.nsutanto.popularmovies.model.Movie;
 import com.udacity.nsutanto.popularmovies.utils.NetworkUtils;
 
@@ -19,10 +19,10 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
     private List<Movie> mMovies = new ArrayList<>();
-    private static ITaskListener mTaskListener;
+    private static ITaskMovieListener mTaskListener;
     private Context context;
 
-    public MovieAdapter(ITaskListener taskListener) {
+    public MovieAdapter(ITaskMovieListener taskListener) {
         mTaskListener = taskListener;
     }
 
