@@ -2,6 +2,8 @@ package com.udacity.nsutanto.popularmovies;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -24,6 +26,7 @@ import com.udacity.nsutanto.popularmovies.model.AppDatabase;
 import com.udacity.nsutanto.popularmovies.model.Movie;
 import com.udacity.nsutanto.popularmovies.task.FetchMovieTask;
 import com.udacity.nsutanto.popularmovies.utils.NetworkUtils;
+import com.udacity.nsutanto.popularmovies.viewmodel.MovieViewModel;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
     private Toolbar mToolbar;
     private SortBy mSortBy;
     private AppDatabase mAppDatabase;
+    private List<Movie> mFavoriteMovies = new ArrayList<>();
     private enum SortBy {
         POPULAR, TOP_RATED, FAVORITE
     }
@@ -58,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
         initRecyclerView();
 
         loadMovieData();
+        setupFavMovieVM();
     }
 
     @Override
@@ -85,8 +90,7 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
             // Favorite
             mSortBy = SortBy.FAVORITE;
             mToolbar.setTitle(R.string.action_favorite);
-
-            loadFavorite();
+            mMovieAdapter.setMovies(mFavoriteMovies);
         }
 
         return super.onOptionsItemSelected(item);
@@ -133,14 +137,15 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
         }
     }
 
-    private void loadFavorite() {
+    private void setupFavMovieVM() {
 
-        final LiveData<List<Movie>> movies = mAppDatabase.movieDao().loadAllMovies();
-        movies.observe(this, new Observer<List<Movie>>() {
+        MovieViewModel movieVM = ViewModelProviders.of(this).get(MovieViewModel.class);
+        movieVM.getMovies().observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
+                mFavoriteMovies = movies;
                 if (mSortBy == SortBy.FAVORITE) {
-                    mMovieAdapter.setMovies(movies);
+                    mMovieAdapter.setMovies(mFavoriteMovies);
                 }
             }
         });
