@@ -1,31 +1,31 @@
 package com.udacity.nsutanto.popularmovies;
 
-import android.arch.persistence.room.ColumnInfo;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.udacity.nsutanto.popularmovies.adapter.MovieAdapter;
 import com.udacity.nsutanto.popularmovies.adapter.ReviewAdapter;
+import com.udacity.nsutanto.popularmovies.listener.ITaskReviewListener;
 import com.udacity.nsutanto.popularmovies.model.AppDatabase;
 import com.udacity.nsutanto.popularmovies.model.Movie;
+import com.udacity.nsutanto.popularmovies.model.Review;
+import com.udacity.nsutanto.popularmovies.task.FetchReviewTask;
 import com.udacity.nsutanto.popularmovies.utils.NetworkUtils;
 
-import java.util.List;
+import java.net.URL;
+import java.util.ArrayList;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements ITaskReviewListener {
 
     private TextView mTitle;
     private ImageView mImageView;
@@ -51,6 +51,7 @@ public class DetailActivity extends AppCompatActivity {
         mMovie = intent.getParcelableExtra("movie");
 
         initUI();
+        initReviewRecyclerView();
 
         mTitle.setText(mMovie.getTitle());
 
@@ -78,6 +79,8 @@ public class DetailActivity extends AppCompatActivity {
         } else {
             mFavorite.setText("Favorite");
         }
+
+        loadReviews();
     }
 
     private void initUI() {
@@ -87,6 +90,17 @@ public class DetailActivity extends AppCompatActivity {
         mVoteAverage = findViewById(R.id.tv_vote);
         mOverview = findViewById(R.id.tv_overview);
         mFavorite = findViewById(R.id.buttonFavorite);
+    }
+
+    public URL GetReviewURL() {
+        URL reviewURL = NetworkUtils.BuildReviewsURL(String.valueOf(mMovie.getId()));
+        return reviewURL;
+    }
+
+    public void OnPostExecute(ArrayList<Review> reviews) {
+        if (!reviews.isEmpty()) {
+            mReviewAdapter.setReviews(reviews);
+        }
     }
 
     public void OnFavButtonClick(View v) {
@@ -118,11 +132,24 @@ public class DetailActivity extends AppCompatActivity {
         mRVReview = findViewById(R.id.rv_review);
 
         mReviewLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mRVReview.setLayoutManager(mReviewLayoutManager);
         mReviewLayoutManager.setSmoothScrollbarEnabled(true);
+        mRVReview.setLayoutManager(mReviewLayoutManager);
+        mRVReview.setNestedScrollingEnabled(false);
+        mRVReview.setHasFixedSize(true);
         mReviewAdapter = new ReviewAdapter();
         mRVReview.setAdapter(mReviewAdapter);
-        mRVReview.setNestedScrollingEnabled(false);
 
+    }
+
+    private void loadReviews() {
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+
+        if (info != null && info.isConnectedOrConnecting()) {
+            new FetchReviewTask().execute(this);
+        } else {
+
+        }
     }
 }
