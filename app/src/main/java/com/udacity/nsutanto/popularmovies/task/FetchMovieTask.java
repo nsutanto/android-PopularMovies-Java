@@ -1,7 +1,7 @@
 package com.udacity.nsutanto.popularmovies.task;
 
 import android.os.AsyncTask;
-import com.udacity.nsutanto.popularmovies.listener.ITaskListener;
+import com.udacity.nsutanto.popularmovies.listener.ITaskMovieListener;
 import com.udacity.nsutanto.popularmovies.model.Movie;
 import com.udacity.nsutanto.popularmovies.utils.JsonUtils;
 import com.udacity.nsutanto.popularmovies.utils.NetworkUtils;
@@ -9,9 +9,9 @@ import com.udacity.nsutanto.popularmovies.utils.NetworkUtils;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class FetchMovieTask extends AsyncTask<ITaskListener, Void, ArrayList<Movie>> {
+public class FetchMovieTask extends AsyncTask<ITaskMovieListener, Void, ArrayList<Movie>> {
 
-    private ITaskListener mTaskListener;
+    private ITaskMovieListener mTaskListener;
 
     @Override
     protected void onPreExecute() {
@@ -20,11 +20,11 @@ public class FetchMovieTask extends AsyncTask<ITaskListener, Void, ArrayList<Mov
     }
 
     @Override
-    protected ArrayList<Movie> doInBackground(ITaskListener... taskListeners) {
+    protected ArrayList<Movie> doInBackground(ITaskMovieListener... taskListeners) {
 
         String jsonResponse;
         mTaskListener = taskListeners[0];
-        URL url = mTaskListener.GetURL();
+        URL url = mTaskListener.GetMovieURL();
 
         try {
             jsonResponse = NetworkUtils.GetResponseFromHttpUrl(url);
