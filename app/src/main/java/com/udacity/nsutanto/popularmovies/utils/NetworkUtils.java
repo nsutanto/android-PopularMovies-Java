@@ -18,8 +18,8 @@ public final class NetworkUtils {
     public static final String BASE_URL = "https://api.themoviedb.org/3";
     public static final String API_MOST_POPULAR = "/movie/popular";
     public static final String API_TOP_RATED = "/movie/top_rated";
-    public static final String API_VIDEOS = "movie/{id}/videos";
-    public static final String API_REVIEWS = "movie/{id}/reviews";
+    public static final String API_VIDEOS = "/movie/{id}/videos";
+    public static final String API_REVIEWS = "/movie/{id}/reviews";
     public static final String API_KEY = "api_key";
     public static final String API_KEY_VALUE = "9bb95d3d5e8e658e1a25ef4a12f3a088";
 
