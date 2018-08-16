@@ -19,7 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.udacity.nsutanto.popularmovies.adapter.MovieAdapter;
-import com.udacity.nsutanto.popularmovies.listener.ITaskListener;
+import com.udacity.nsutanto.popularmovies.listener.ITaskMovieListener;
 import com.udacity.nsutanto.popularmovies.model.AppDatabase;
 import com.udacity.nsutanto.popularmovies.model.Movie;
 import com.udacity.nsutanto.popularmovies.task.FetchMovieTask;
@@ -34,7 +34,7 @@ import java.util.List;
 // TODO: Implement the Up back
 // TODO: Implement keep loading the background when rotating the device
 
-public class MainActivity extends AppCompatActivity implements ITaskListener {
+public class MainActivity extends AppCompatActivity implements ITaskMovieListener {
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements ITaskListener {
         }
     }
 
-    public URL GetURL() {
+    public URL GetMovieURL() {
         if (mSortBy == SortBy.TOP_RATED) {
             return NetworkUtils.BuildTopRatedMovieURL();
         } else {
