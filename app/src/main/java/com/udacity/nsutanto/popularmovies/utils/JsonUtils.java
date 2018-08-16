@@ -2,6 +2,7 @@ package com.udacity.nsutanto.popularmovies.utils;
 
 import com.udacity.nsutanto.popularmovies.model.Movie;
 import com.udacity.nsutanto.popularmovies.model.Review;
+import com.udacity.nsutanto.popularmovies.model.Video;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +21,7 @@ public class JsonUtils {
     public static final String OVERVIEW = "overview";
     public static final String AUTHOR = "author";
     public static final String CONTENT = "content";
+    public static final String KEY = "key";
 
 
     public static ArrayList<Movie> ParseMoviesJSON(String json) throws JSONException {
@@ -66,5 +68,22 @@ public class JsonUtils {
         return reviews;
     }
 
+    public static ArrayList<Video> ParseVideosJSON(String json) throws JSONException {
+        ArrayList<Video> videos = new ArrayList<>();
+        JSONObject jsonObj = new JSONObject(json);
+
+
+        JSONArray results = jsonObj.getJSONArray(RESULTS);
+
+        for (int i = 0; i < results.length(); i++) {
+            JSONObject videoObj = results.getJSONObject(i);
+
+            String key  = videoObj.getString(KEY);
+            Video video = new Video(key);
+            videos.add(video);
+        }
+
+        return videos;
+    }
 }
 
