@@ -39,6 +39,6 @@ public class FetchReviewTask extends AsyncTask<ITaskReviewListener, Void, ArrayL
 
     @Override
     protected void onPostExecute(ArrayList<Review> reviews) {
-        mTaskListener.OnPostExecute(reviews);
+        mTaskListener.OnPostExecuteReviewTask(reviews);
     }
 }
