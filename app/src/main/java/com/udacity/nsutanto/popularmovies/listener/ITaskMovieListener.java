@@ -5,8 +5,8 @@ import com.udacity.nsutanto.popularmovies.model.Movie;
 import java.net.URL;
 import java.util.ArrayList;
 
-public interface ITaskListener {
+public interface ITaskMovieListener {
     void OnPostExecute(ArrayList<Movie> movies);
-    URL GetURL();
+    URL GetMovieURL();
     void StartDetailActivity(Movie movie);
 }
