@@ -92,10 +92,32 @@
             android:id="@+id/tv_overview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:textColor="@android:color/background_light"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageLayout" />
+
+        <TextView
+            android:id="@+id/tv_TrailersText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/trailers"
+            android:textColor="@android:color/background_light"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_overview" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_trailer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_TrailersText" />
 
         <TextView
             android:id="@+id/tv_Reviews"
@@ -104,11 +126,11 @@
             android:layout_marginTop="16dp"
             android:text="@string/reviews"
             android:textColor="@android:color/background_light"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_overview" />
+            app:layout_constraintTop_toBottomOf="@+id/rv_trailer" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_review"
