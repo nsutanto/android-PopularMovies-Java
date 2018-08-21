@@ -1,8 +1,6 @@
 package com.udacity.nsutanto.popularmovies;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-// TODO: Fix landscape / horizontal layout
 // TODO: Implement the Up back
 // TODO: Implement keep loading the background when rotating the device
 
@@ -44,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
     private ProgressBar mLoadingIndicator;
     private TextView mErrorMessage;
     private Toolbar mToolbar;
-    private SortBy mSortBy;
+    private SortBy mSortBy = SortBy.POPULAR;
     private AppDatabase mAppDatabase;
     private List<Movie> mFavoriteMovies = new ArrayList<>();
     private enum SortBy {
@@ -58,10 +56,17 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
 
         mAppDatabase = AppDatabase.getInstance(getApplicationContext());
 
+        if (savedInstanceState != null) {
+            int sortByInt = savedInstanceState.getInt("SortBy");
+            mSortBy = SortBy.values()[sortByInt];
+        }
+
         initUI();
         initRecyclerView();
 
-        loadMovieData();
+        if (mSortBy == SortBy.POPULAR || mSortBy == SortBy.TOP_RATED) {
+            loadMovieData();
+        }
         setupFavMovieVM();
     }
 
@@ -69,7 +74,14 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_movie, menu);
-        mToolbar.setTitle(R.string.action_popular);
+
+        if (mSortBy == SortBy.POPULAR) {
+            mToolbar.setTitle(R.string.action_popular);
+        } else if (mSortBy == SortBy.TOP_RATED) {
+            mToolbar.setTitle(R.string.action_top_rated);
+        } else {
+            mToolbar.setTitle(R.string.action_favorite);
+        }
         return true;
     }
 
@@ -94,6 +106,19 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("SortBy", mSortBy.ordinal());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        int sortByInt = savedInstanceState.getInt("SortBy");
+        mSortBy = SortBy.values()[sortByInt];
     }
 
     public void OnPostExecute(ArrayList<Movie> movies) {
@@ -156,7 +181,6 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        mSortBy = SortBy.POPULAR;
         mLoadingIndicator = findViewById(R.id.progressBar);
         mErrorMessage = findViewById(R.id.errorTextView);
     }
@@ -164,11 +188,22 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
     private void initRecyclerView() {
         mRecyclerView = findViewById(R.id.recyclerView_movie);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        int numColumn = calculateNoOfColumns(this);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, numColumn);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
         mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
 
+    }
+
+    public static int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int scalingFactor = 200;
+        int noOfColumns = (int) (dpWidth / scalingFactor);
+        if(noOfColumns < 2)
+            noOfColumns = 2;
+        return noOfColumns;
     }
 }
