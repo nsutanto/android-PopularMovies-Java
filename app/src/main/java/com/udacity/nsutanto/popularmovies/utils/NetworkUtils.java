@@ -3,6 +3,8 @@ package com.udacity.nsutanto.popularmovies.utils;
 import android.net.Uri;
 import android.util.Log;
 
+import com.udacity.nsutanto.popularmovies.BuildConfig;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -21,7 +23,7 @@ public final class NetworkUtils {
     public static final String API_VIDEOS = "/movie/{id}/videos";
     public static final String API_REVIEWS = "/movie/{id}/reviews";
     public static final String API_KEY = "api_key";
-    public static final String API_KEY_VALUE = "9bb95d3d5e8e658e1a25ef4a12f3a088";
+    public static final String API_KEY_VALUE = BuildConfig.API_KEY;
 
 
     public static URL BuildVideosURL(String movieID) {
