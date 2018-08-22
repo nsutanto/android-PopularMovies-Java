@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -31,12 +32,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-
-// TODO: Implement the Up back
-// TODO: Implement keep loading the background when rotating the device
-
 public class MainActivity extends AppCompatActivity implements ITaskMovieListener {
 
+    private int layoutPosition;
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private ProgressBar mLoadingIndicator;
@@ -59,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
         if (savedInstanceState != null) {
             int sortByInt = savedInstanceState.getInt("SortBy");
             mSortBy = SortBy.values()[sortByInt];
+            layoutPosition = savedInstanceState.getInt("LayoutPosition");
         }
 
         initUI();
@@ -112,6 +111,12 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("SortBy", mSortBy.ordinal());
+
+        RecyclerView.LayoutManager layoutManager = mRecyclerView.getLayoutManager();
+        if (layoutManager != null) {
+            layoutPosition = ((GridLayoutManager) layoutManager).findFirstVisibleItemPosition();
+            outState.putInt("LayoutPosition", layoutPosition);
+        }
     }
 
     @Override
@@ -119,6 +124,11 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
         super.onRestoreInstanceState(savedInstanceState);
         int sortByInt = savedInstanceState.getInt("SortBy");
         mSortBy = SortBy.values()[sortByInt];
+        RecyclerView.LayoutManager layoutManager = mRecyclerView.getLayoutManager();
+        if (layoutManager != null) {
+            layoutPosition = savedInstanceState.getInt("LayoutPosition");
+            layoutManager.scrollToPosition(layoutPosition);
+        }
     }
 
     public void OnPostExecute(ArrayList<Movie> movies) {
@@ -141,9 +151,25 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
     }
 
     public void StartDetailActivity(Movie movie) {
+
+        if (isInFavoriteList(movie)) {
+            movie.setFavorite(1);
+        }
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra("movie", movie);
         startActivity(intent);
+    }
+
+    private boolean isInFavoriteList(Movie movie) {
+        boolean isFavorite = false;
+
+        for (Movie favoriteMovie: mFavoriteMovies) {
+            if (movie.getId() == favoriteMovie.getId()) {
+                isFavorite = true;
+                break;
+            }
+        }
+        return isFavorite;
     }
 
     private void loadMovieData() {
@@ -189,7 +215,10 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
         mRecyclerView = findViewById(R.id.recyclerView_movie);
 
         int numColumn = calculateNoOfColumns(this);
+
         GridLayoutManager layoutManager = new GridLayoutManager(this, numColumn);
+        layoutManager.scrollToPosition(layoutPosition);
+
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
         mMovieAdapter = new MovieAdapter(this);
