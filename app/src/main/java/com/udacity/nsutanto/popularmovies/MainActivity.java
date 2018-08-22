@@ -7,10 +7,10 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -35,6 +35,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements ITaskMovieListener {
 
     private int layoutPosition;
+    private Parcelable layoutState;
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private ProgressBar mLoadingIndicator;
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
     private SortBy mSortBy = SortBy.POPULAR;
     private AppDatabase mAppDatabase;
     private List<Movie> mFavoriteMovies = new ArrayList<>();
+    private GridLayoutManager layoutManager;
+    private Bundle mBundle;
     private enum SortBy {
         POPULAR, TOP_RATED, FAVORITE
     }
@@ -58,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
             int sortByInt = savedInstanceState.getInt("SortBy");
             mSortBy = SortBy.values()[sortByInt];
             layoutPosition = savedInstanceState.getInt("LayoutPosition");
+            layoutState = savedInstanceState.getParcelable("LayoutState");
         }
 
         initUI();
@@ -67,6 +71,31 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
             loadMovieData();
         }
         setupFavMovieVM();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (layoutState != null) {
+            layoutManager.onRestoreInstanceState(layoutState);
+        }
+
+        if (mBundle != null) {
+            Parcelable listState = mBundle.getParcelable("TESTTEST");
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
+        }
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+
+        // save RecyclerView state
+        mBundle = new Bundle();
+        Parcelable listState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+        mBundle.putParcelable("TESTTEST", listState);
     }
 
     @Override
@@ -116,6 +145,8 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
         if (layoutManager != null) {
             layoutPosition = ((GridLayoutManager) layoutManager).findFirstVisibleItemPosition();
             outState.putInt("LayoutPosition", layoutPosition);
+            Parcelable layoutState = layoutManager.onSaveInstanceState();
+            outState.putParcelable("LayoutState", layoutState);
         }
     }
 
@@ -128,6 +159,8 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
         if (layoutManager != null) {
             layoutPosition = savedInstanceState.getInt("LayoutPosition");
             layoutManager.scrollToPosition(layoutPosition);
+            layoutState = savedInstanceState.getParcelable("LayoutState");
+            layoutManager.onRestoreInstanceState(layoutState);
         }
     }
 
@@ -216,8 +249,9 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
 
         int numColumn = calculateNoOfColumns(this);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, numColumn);
+        layoutManager = new GridLayoutManager(this, numColumn);
         layoutManager.scrollToPosition(layoutPosition);
+        layoutManager.onRestoreInstanceState(layoutState);
 
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
