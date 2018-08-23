@@ -34,8 +34,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ITaskMovieListener {
 
-    private int layoutPosition;
-    private Parcelable layoutState;
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private ProgressBar mLoadingIndicator;
@@ -43,9 +41,8 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
     private Toolbar mToolbar;
     private SortBy mSortBy = SortBy.POPULAR;
     private AppDatabase mAppDatabase;
-    private List<Movie> mFavoriteMovies = new ArrayList<>();
+    private static List<Movie> mFavoriteMovies ;
     private GridLayoutManager layoutManager;
-    private Bundle mBundle;
     private enum SortBy {
         POPULAR, TOP_RATED, FAVORITE
     }
@@ -57,45 +54,28 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
 
         mAppDatabase = AppDatabase.getInstance(getApplicationContext());
 
-        if (savedInstanceState != null) {
-            int sortByInt = savedInstanceState.getInt("SortBy");
-            mSortBy = SortBy.values()[sortByInt];
-            layoutPosition = savedInstanceState.getInt("LayoutPosition");
-            layoutState = savedInstanceState.getParcelable("LayoutState");
-        }
-
         initUI();
         initRecyclerView();
 
-        if (mSortBy == SortBy.POPULAR || mSortBy == SortBy.TOP_RATED) {
-            loadMovieData();
+        if (savedInstanceState != null && savedInstanceState.containsKey("SCROLL_POS")) {
+            mRecyclerView.scrollToPosition(savedInstanceState.getInt("SCROLL_POS"));
+            mMovieAdapter.setMovies(mFavoriteMovies);
+        }else {
+            if (mSortBy == SortBy.POPULAR || mSortBy == SortBy.TOP_RATED) {
+                loadMovieData();
+            }
+            setupFavMovieVM();
         }
-        setupFavMovieVM();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (layoutState != null) {
-            layoutManager.onRestoreInstanceState(layoutState);
-        }
-
-        if (mBundle != null) {
-            Parcelable listState = mBundle.getParcelable("TESTTEST");
-            mRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
-        }
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
-
-        // save RecyclerView state
-        mBundle = new Bundle();
-        Parcelable listState = mRecyclerView.getLayoutManager().onSaveInstanceState();
-        mBundle.putParcelable("TESTTEST", listState);
     }
 
     @Override
@@ -139,39 +119,19 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("SortBy", mSortBy.ordinal());
+        outState.putInt("SCROLL_POS", mRecyclerView.getScrollY());
 
-        RecyclerView.LayoutManager layoutManager = mRecyclerView.getLayoutManager();
-        if (layoutManager != null) {
-            layoutPosition = ((GridLayoutManager) layoutManager).findFirstVisibleItemPosition();
-            outState.putInt("LayoutPosition", layoutPosition);
-            Parcelable layoutState = layoutManager.onSaveInstanceState();
-            outState.putParcelable("LayoutState", layoutState);
-        }
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        int sortByInt = savedInstanceState.getInt("SortBy");
-        mSortBy = SortBy.values()[sortByInt];
-        RecyclerView.LayoutManager layoutManager = mRecyclerView.getLayoutManager();
-        if (layoutManager != null) {
-            layoutPosition = savedInstanceState.getInt("LayoutPosition");
-            layoutManager.scrollToPosition(layoutPosition);
-            layoutState = savedInstanceState.getParcelable("LayoutState");
-            layoutManager.onRestoreInstanceState(layoutState);
-        }
     }
 
     public void OnPostExecute(ArrayList<Movie> movies) {
 
-        if (movies.isEmpty()) {
+        mFavoriteMovies=movies;
+        if (mFavoriteMovies.isEmpty()) {
 
         } else {
             mErrorMessage.setVisibility(View.INVISIBLE);
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-            mMovieAdapter.setMovies(movies);
+            mMovieAdapter.setMovies(mFavoriteMovies);
         }
     }
 
@@ -250,9 +210,6 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
         int numColumn = calculateNoOfColumns(this);
 
         layoutManager = new GridLayoutManager(this, numColumn);
-        layoutManager.scrollToPosition(layoutPosition);
-        layoutManager.onRestoreInstanceState(layoutState);
-
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
         mMovieAdapter = new MovieAdapter(this);
