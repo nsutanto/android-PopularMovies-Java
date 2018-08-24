@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -41,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
     private Toolbar mToolbar;
     private SortBy mSortBy = SortBy.POPULAR;
     private AppDatabase mAppDatabase;
-    private static List<Movie> mFavoriteMovies ;
+    private List<Movie> mFavoriteMovies = new ArrayList<>();
     private GridLayoutManager layoutManager;
     private enum SortBy {
         POPULAR, TOP_RATED, FAVORITE
@@ -59,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
 
         if (savedInstanceState != null && savedInstanceState.containsKey("SCROLL_POS")) {
             mRecyclerView.scrollToPosition(savedInstanceState.getInt("SCROLL_POS"));
-            mMovieAdapter.setMovies(mFavoriteMovies);
         }else {
             if (mSortBy == SortBy.POPULAR || mSortBy == SortBy.TOP_RATED) {
                 loadMovieData();
@@ -125,13 +123,13 @@ public class MainActivity extends AppCompatActivity implements ITaskMovieListene
 
     public void OnPostExecute(ArrayList<Movie> movies) {
 
-        mFavoriteMovies=movies;
-        if (mFavoriteMovies.isEmpty()) {
+
+        if (movies.isEmpty()) {
 
         } else {
             mErrorMessage.setVisibility(View.INVISIBLE);
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-            mMovieAdapter.setMovies(mFavoriteMovies);
+            mMovieAdapter.setMovies(movies);
         }
     }
 
