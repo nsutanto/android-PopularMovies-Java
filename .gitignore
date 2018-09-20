@@ -65,4 +65,7 @@ fastlane/test_output
 fastlane/readme.md
 
 # gradle properties
-/gradle.properties
+gradle.properties
+
+# idea
+./idea/*
